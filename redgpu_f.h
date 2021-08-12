@@ -502,6 +502,7 @@ REDGPU_F_DECLSPEC uint64_t            redFEventParametersDragGetFilesCount    (R
 REDGPU_F_DECLSPEC const char *        redFEventParametersDragGetFile          (RedFHandleEventParametersDrag parameters, uint64_t fileIndex);
 REDGPU_F_DECLSPEC float               redFEventParametersDragGetPositionX     (RedFHandleEventParametersDrag parameters);
 REDGPU_F_DECLSPEC float               redFEventParametersDragGetPositionY     (RedFHandleEventParametersDrag parameters);
+
 REDGPU_F_DECLSPEC void                redFPushMatrix                          (void);
 REDGPU_F_DECLSPEC void                redFMultMatrix                          (void * mat4);
 REDGPU_F_DECLSPEC void                redFMultViewMatrix                      (void * mat4);
@@ -569,6 +570,8 @@ REDGPU_F_DECLSPEC void                redFDisableSeparateSpecularLight        (v
 REDGPU_F_DECLSPEC void                redFSetGlobalAmbientColor               (float r, float g, float b, float a);
 REDGPU_F_DECLSPEC void                redFGetGlobalAmbientColor               (void * outVec4);
 REDGPU_F_DECLSPEC void                redFSetSmoothLighting                   (RedFBool32 enable);
+REDGPU_F_DECLSPEC void                redFEnableCulling                       (unsigned modeDefaultIsGLBack0x0405);
+REDGPU_F_DECLSPEC void                redFDisableCulling                      (void);
 REDGPU_F_DECLSPEC float               redFGetElapsedTimef                     (void);
 REDGPU_F_DECLSPEC uint64_t            redFGetElapsedTimeMillis                (void);
 REDGPU_F_DECLSPEC uint64_t            redFGetElapsedTimeMicros                (void);
