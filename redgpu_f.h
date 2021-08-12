@@ -140,7 +140,7 @@ typedef enum RedFLightType {
   REDF_LIGHT_TYPE_POINT       = 0,
   REDF_LIGHT_TYPE_DIRECTIONAL = 1,
   REDF_LIGHT_TYPE_SPOT        = 2,
-  REDF_LIGHT_TYPE_AREA        = 3, // Only for OpenGL 3.2+
+  REDF_LIGHT_TYPE_AREA        = 3,
 } RedFLightType;
 
 typedef enum RedFWindowMode {
