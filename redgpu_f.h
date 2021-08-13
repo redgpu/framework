@@ -359,6 +359,7 @@ REDGPU_F_DECLSPEC void                redFDestroyFbo                          (R
 REDGPU_F_DECLSPEC void                redFFboAllocate                         (RedFHandleFbo handle, int width, int height, const RedFFboSettings * optionalSettings);
 REDGPU_F_DECLSPEC RedFBool32          redFFboIsAllocated                      (RedFHandleFbo handle);
 REDGPU_F_DECLSPEC void                redFFboBegin                            (RedFHandleFbo handle);
+REDGPU_F_DECLSPEC void                redFFboActivateAllDrawBuffers           (RedFHandleFbo handle);
 REDGPU_F_DECLSPEC void                redFFboEnd                              (RedFHandleFbo handle);
 REDGPU_F_DECLSPEC void                redFFboSetTextureWrap                   (RedFHandleFbo handle, int fboAttachmentPoint, int wrapModeHorizontal, int wrapModeVertical);
 REDGPU_F_DECLSPEC void                redFFboSetTextureMinMagFilter           (RedFHandleFbo handle, int fboAttachmentPoint, int minFilter, int magFilter);
@@ -367,6 +368,11 @@ REDGPU_F_DECLSPEC void                redFFboUnbind                           (R
 REDGPU_F_DECLSPEC void                redFFboDraw                             (RedFHandleFbo handle, int fboAttachmentPoint, float x, float y, float width, float height);
 REDGPU_F_DECLSPEC void                redFFboReadToImage                      (RedFHandleFbo handle, int fboAttachmentPoint, RedFHandleImage image);
 REDGPU_F_DECLSPEC void                redFFboSave                             (RedFHandleFbo handle, int fboAttachmentPoint, const char * fileName);
+REDGPU_F_DECLSPEC void                redFFboClear                            (RedFHandleFbo handle);
+REDGPU_F_DECLSPEC void                redFFboClearColorBuffer                 (RedFHandleFbo handle, int bufferIndex, float r, float g, float b, float a);
+REDGPU_F_DECLSPEC void                redFFboClearDepthBuffer                 (RedFHandleFbo handle, float depth);
+REDGPU_F_DECLSPEC void                redFFboClearStencilBuffer               (RedFHandleFbo handle, int stencil);
+REDGPU_F_DECLSPEC void                redFFboClearDepthStencilBuffer          (RedFHandleFbo handle, float depth, int stencil);
 
 REDGPU_F_DECLSPEC RedFHandleLight *   redFCreateLight                         (uint64_t count);
 REDGPU_F_DECLSPEC void                redFDestroyLight                        (RedFHandleLight * handles);
@@ -524,6 +530,8 @@ REDGPU_F_DECLSPEC void                redFDrawBox                             (f
 REDGPU_F_DECLSPEC void                redFDrawPlane                           (float x, float y, float z, float width, float height);
 REDGPU_F_DECLSPEC void                redFDrawBoxPrimitive                    (float x, float y, float z, float qx, float qy, float qz, float qw, float width, float height, float depth, int resWidth, int resHeight, int resDepth, RedFBool32 wireframe, int r, int g, int b, int a);
 REDGPU_F_DECLSPEC void                redFDrawPlanePrimitive                  (float x, float y, float z, float qx, float qy, float qz, float qw, float width, float height, int resWidth, int resHeight, RedFBool32 wireframe);
+REDGPU_F_DECLSPEC void                redFGetBoxPrimitiveMesh                 (float width, float height, float depth, int resWidth, int resHeight, int resDepth, RedFHandleMesh replaceMesh);
+REDGPU_F_DECLSPEC void                redFGetPlanePrimitiveMesh               (float width, float height, int resWidth, int resHeight, RedFHandleMesh replaceMesh);
 REDGPU_F_DECLSPEC void                redFDrawLine                            (float x0, float y0, float z0, float x1, float y1, float z1);
 REDGPU_F_DECLSPEC void                redFDrawCircle                          (float x, float y, float z, float radius);
 REDGPU_F_DECLSPEC void                redFDrawRectangle                       (float x, float y, float z, float w, float h);
