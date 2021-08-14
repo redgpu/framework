@@ -15,6 +15,7 @@ typedef struct RedFTypeHandleMesh *                  RedFHandleMesh;
 typedef struct RedFTypeHandleImage *                 RedFHandleImage;
 typedef struct RedFTypeHandleFbo *                   RedFHandleFbo;
 typedef struct RedFTypeHandleLight *                 RedFHandleLight;                 // Derived from Node
+typedef struct RedFTypeHandleMaterial *              RedFHandleMaterial;
 typedef struct RedFTypeHandleShader *                RedFHandleShader;
 typedef struct RedFTypeHandleManipulator *           RedFHandleManipulator;
 typedef struct RedFTypeHandleAssimp *                RedFHandleAssimp;
@@ -67,6 +68,21 @@ typedef struct RedFFboSettings {
   int        maxFilter;                  // GL_NEAREST, GL_LINEAR etc.
   int        numSamples;                 // Number of samples for multisampling (set 0 to disable)
 } RedFFboSettings;
+
+typedef struct RedFMaterialSettings {
+  float        diffuse[4];     // Diffuse reflectance     (default is 0.8f, 0.8f, 0.8f, 1.0f)
+  float        ambient[4];     // Ambient reflectance     (default is 0.2f, 0.2f, 0.2f, 1.0f)
+  float        specular[4];    // Specular reflectance    (default is 0.0f, 0.0f, 0.0f, 1.0f)
+  float        emissive[4];    // Emitted light intensity (default is 0.0f, 0.0f, 0.0f, 1.0f)
+  float        shininess;      // Specular exponent       (default is 0.2f)
+  const char * postFragment;
+  const char * customUniforms;
+} RedFMaterialSettings;
+
+typedef enum RedFMatrixMode {
+  REDF_MATRIX_MODE_MODEL_VIEW = 0,
+  REDF_MATRIX_MODE_PROJECTION = 1,
+} RedFMatrixMode;
 
 typedef enum RedFMouseButton {
   REDF_MOUSE_BUTTON_1      = 0,
@@ -345,6 +361,7 @@ REDGPU_F_DECLSPEC void                redFImageRotate90                       (R
 REDGPU_F_DECLSPEC void                redFImageMirror                         (RedFHandleImage handle, RedFBool32 vertical, RedFBool32 horizontal);
 REDGPU_F_DECLSPEC void                redFImageSetTextureWrap                 (RedFHandleImage handle, int wrapModeHorizontal, int wrapModeVertical);
 REDGPU_F_DECLSPEC void                redFImageSetTextureMinMagFilter         (RedFHandleImage handle, int minFilter, int magFilter);
+REDGPU_F_DECLSPEC void                redFImageSetTextureCompareModeFunc      (RedFHandleImage handle, int compareMode, int compareFunc);
 REDGPU_F_DECLSPEC void                redFImageSetAnchorPercent               (RedFHandleImage handle, float x, float y);
 REDGPU_F_DECLSPEC void                redFImageSetAnchorPoint                 (RedFHandleImage handle, float x, float y);
 REDGPU_F_DECLSPEC void                redFImageResetAnchor                    (RedFHandleImage handle);
@@ -358,14 +375,20 @@ REDGPU_F_DECLSPEC RedFHandleFbo *     redFCreateFbo                           (u
 REDGPU_F_DECLSPEC void                redFDestroyFbo                          (RedFHandleFbo * handles);
 REDGPU_F_DECLSPEC void                redFFboAllocate                         (RedFHandleFbo handle, int width, int height, const RedFFboSettings * optionalSettings);
 REDGPU_F_DECLSPEC RedFBool32          redFFboIsAllocated                      (RedFHandleFbo handle);
-REDGPU_F_DECLSPEC void                redFFboBegin                            (RedFHandleFbo handle);
+REDGPU_F_DECLSPEC void                redFFboBegin                            (RedFHandleFbo handle, RedFBool32 setupScreenDefaultIs1);
 REDGPU_F_DECLSPEC void                redFFboActivateAllDrawBuffers           (RedFHandleFbo handle);
 REDGPU_F_DECLSPEC void                redFFboEnd                              (RedFHandleFbo handle);
 REDGPU_F_DECLSPEC void                redFFboSetTextureWrap                   (RedFHandleFbo handle, int fboAttachmentPoint, int wrapModeHorizontal, int wrapModeVertical);
 REDGPU_F_DECLSPEC void                redFFboSetTextureMinMagFilter           (RedFHandleFbo handle, int fboAttachmentPoint, int minFilter, int magFilter);
+REDGPU_F_DECLSPEC void                redFFboSetTextureCompareModeFunc        (RedFHandleFbo handle, int fboAttachmentPoint, int compareMode, int compareFunc);
+REDGPU_F_DECLSPEC void                redFFboSetDepthTextureWrap              (RedFHandleFbo handle, int wrapModeHorizontal, int wrapModeVertical);
+REDGPU_F_DECLSPEC void                redFFboSetDepthTextureMinMagFilter      (RedFHandleFbo handle, int minFilter, int magFilter);
+REDGPU_F_DECLSPEC void                redFFboSetDepthTextureCompareModeFunc   (RedFHandleFbo handle, int compareMode, int compareFunc);
+REDGPU_F_DECLSPEC void                redFFboSetDepthTextureRGToRGBASwizzles  (RedFHandleFbo handle, RedFBool32 rToRGBSwizzles);
 REDGPU_F_DECLSPEC void                redFFboBind                             (RedFHandleFbo handle, int fboAttachmentPoint);
 REDGPU_F_DECLSPEC void                redFFboUnbind                           (RedFHandleFbo handle, int fboAttachmentPoint);
 REDGPU_F_DECLSPEC void                redFFboDraw                             (RedFHandleFbo handle, int fboAttachmentPoint, float x, float y, float width, float height);
+REDGPU_F_DECLSPEC void                redFFboDepthDraw                        (RedFHandleFbo handle, float x, float y, float width, float height);
 REDGPU_F_DECLSPEC void                redFFboReadToImage                      (RedFHandleFbo handle, int fboAttachmentPoint, RedFHandleImage image);
 REDGPU_F_DECLSPEC void                redFFboSave                             (RedFHandleFbo handle, int fboAttachmentPoint, const char * fileName);
 REDGPU_F_DECLSPEC void                redFFboClear                            (RedFHandleFbo handle);
@@ -406,12 +429,35 @@ REDGPU_F_DECLSPEC void                redFLightGetDiffuseColor                (R
 REDGPU_F_DECLSPEC void                redFLightGetSpecularColor               (RedFHandleLight handle, void * outVec4);
 REDGPU_F_DECLSPEC int                 redFLightGetLightID                     (RedFHandleLight handle);
 
+REDGPU_F_DECLSPEC RedFHandleMaterial * redFCreateMaterial                     (uint64_t count);
+REDGPU_F_DECLSPEC void                redFDestroyMaterial                     (RedFHandleMaterial * handles);
+REDGPU_F_DECLSPEC void                redFMaterialSetup                       (RedFHandleMaterial handle, const RedFMaterialSettings * settings);
+REDGPU_F_DECLSPEC void                redFMaterialSetDiffuseColor             (RedFHandleMaterial handle, float r, float g, float b, float a);
+REDGPU_F_DECLSPEC void                redFMaterialSetAmbientColor             (RedFHandleMaterial handle, float r, float g, float b, float a);
+REDGPU_F_DECLSPEC void                redFMaterialSetSpecularColor            (RedFHandleMaterial handle, float r, float g, float b, float a);
+REDGPU_F_DECLSPEC void                redFMaterialSetEmissiveColor            (RedFHandleMaterial handle, float r, float g, float b, float a);
+REDGPU_F_DECLSPEC void                redFMaterialSetShininess                (RedFHandleMaterial handle, float nShininess);
+REDGPU_F_DECLSPEC void                redFMaterialGetDiffuseColor             (RedFHandleMaterial handle, void * outVec4);
+REDGPU_F_DECLSPEC void                redFMaterialGetAmbientColor             (RedFHandleMaterial handle, void * outVec4);
+REDGPU_F_DECLSPEC void                redFMaterialGetSpecularColor            (RedFHandleMaterial handle, void * outVec4);
+REDGPU_F_DECLSPEC void                redFMaterialGetEmissiveColor            (RedFHandleMaterial handle, void * outVec4);
+REDGPU_F_DECLSPEC float               redFMaterialGetShininess                (RedFHandleMaterial handle);
+REDGPU_F_DECLSPEC void                redFMaterialGetSettings                 (RedFHandleMaterial handle, RedFMaterialSettings * outSettings, const char ** outMallocPostFragment, const char ** outMallocCustomUniforms);
+REDGPU_F_DECLSPEC void                redFMaterialSetCustomUniform4f          (RedFHandleMaterial handle, const char * uniformName, float v0, float v1, float v2, float v3);
+REDGPU_F_DECLSPEC void                redFMaterialSetCustomUniformMatrix4f    (RedFHandleMaterial handle, const char * uniformName, void * mat4);
+REDGPU_F_DECLSPEC void                redFMaterialSetCustomUniformImage       (RedFHandleMaterial handle, const char * uniformName, RedFHandleImage image, int textureLocation);
+REDGPU_F_DECLSPEC void                redFMaterialSetCustomUniformFbo         (RedFHandleMaterial handle, const char * uniformName, RedFHandleFbo fbo, int fboAttachmentPoint, int textureLocation);
+REDGPU_F_DECLSPEC void                redFMaterialSetCustomUniformFboDepth    (RedFHandleMaterial handle, const char * uniformName, RedFHandleFbo fbo, int textureLocation);
+REDGPU_F_DECLSPEC void                redFMaterialBegin                       (RedFHandleMaterial handle);
+REDGPU_F_DECLSPEC void                redFMaterialEnd                         (RedFHandleMaterial handle);
+
 REDGPU_F_DECLSPEC RedFHandleShader *  redFCreateShader                        (uint64_t count);
 REDGPU_F_DECLSPEC void                redFDestroyShader                       (RedFHandleShader * handles);
 REDGPU_F_DECLSPEC void                redFShaderLoad                          (RedFHandleShader handle, const char * vertexFileName, const char * fragmentFileName);
 REDGPU_F_DECLSPEC void                redFShaderBegin                         (RedFHandleShader handle);
 REDGPU_F_DECLSPEC void                redFShaderSetUniform4f                  (RedFHandleShader handle, const char * uniformName, float v0, float v1, float v2, float v3);
-REDGPU_F_DECLSPEC void                redFShaderSetUniform4fv                 (RedFHandleShader handle, const char * uniformName, const void * v, int count);
+REDGPU_F_DECLSPEC void                redFShaderSetUniform4fv                 (RedFHandleShader handle, const char * uniformName, void * v, int count);
+REDGPU_F_DECLSPEC void                redFShaderSetUniformMatrix4f            (RedFHandleShader handle, const char * uniformName, void * mat4);
 REDGPU_F_DECLSPEC void                redFShaderSetUniformImage               (RedFHandleShader handle, const char * uniformName, RedFHandleImage image, int textureLocation);
 REDGPU_F_DECLSPEC void                redFShaderSetUniformFbo                 (RedFHandleShader handle, const char * uniformName, RedFHandleFbo fbo, int fboAttachmentPoint, int textureLocation);
 REDGPU_F_DECLSPEC void                redFShaderSetUniformFboDepth            (RedFHandleShader handle, const char * uniformName, RedFHandleFbo fbo, int textureLocation);
@@ -516,6 +562,9 @@ REDGPU_F_DECLSPEC void                redFScale                               (f
 REDGPU_F_DECLSPEC void                redFRotateDeg                           (float degrees, float axisX, float axisY, float axisZ);
 REDGPU_F_DECLSPEC void                redFTranslate                           (float x, float y, float z);
 REDGPU_F_DECLSPEC void                redFPopMatrix                           (void);
+REDGPU_F_DECLSPEC void                redFSetMatrixMode                       (RedFMatrixMode matrixMode);
+REDGPU_F_DECLSPEC void                redFLoadMatrix                          (void * mat4);
+REDGPU_F_DECLSPEC void                redFLoadViewMatrix                      (void * mat4);
 REDGPU_F_DECLSPEC void                redFPushStyle                           (void);
 REDGPU_F_DECLSPEC void                redFBackground                          (int r, int g, int b, int a);
 REDGPU_F_DECLSPEC void                redFFill                                (void);
