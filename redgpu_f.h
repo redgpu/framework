@@ -453,7 +453,7 @@ REDGPU_F_DECLSPEC void                redFMaterialEnd                         (R
 
 REDGPU_F_DECLSPEC RedFHandleShader *  redFCreateShader                        (uint64_t count);
 REDGPU_F_DECLSPEC void                redFDestroyShader                       (RedFHandleShader * handles);
-REDGPU_F_DECLSPEC void                redFShaderLoad                          (RedFHandleShader handle, const char * vertexFileName, const char * fragmentFileName);
+REDGPU_F_DECLSPEC RedFBool32          redFShaderLoad                          (RedFHandleShader handle, const char * vertexFileName, const char * fragmentFileName);
 REDGPU_F_DECLSPEC void                redFShaderBegin                         (RedFHandleShader handle);
 REDGPU_F_DECLSPEC void                redFShaderSetUniform4f                  (RedFHandleShader handle, const char * uniformName, float v0, float v1, float v2, float v3);
 REDGPU_F_DECLSPEC void                redFShaderSetUniform4fv                 (RedFHandleShader handle, const char * uniformName, void * v, int count);
@@ -565,6 +565,8 @@ REDGPU_F_DECLSPEC void                redFPopMatrix                           (v
 REDGPU_F_DECLSPEC void                redFSetMatrixMode                       (RedFMatrixMode matrixMode);
 REDGPU_F_DECLSPEC void                redFLoadMatrix                          (void * mat4);
 REDGPU_F_DECLSPEC void                redFLoadViewMatrix                      (void * mat4);
+REDGPU_F_DECLSPEC void                redFPushView                            (void);
+REDGPU_F_DECLSPEC void                redFPopView                             (void);
 REDGPU_F_DECLSPEC void                redFPushStyle                           (void);
 REDGPU_F_DECLSPEC void                redFBackground                          (int r, int g, int b, int a);
 REDGPU_F_DECLSPEC void                redFFill                                (void);
