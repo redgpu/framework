@@ -494,6 +494,8 @@ REDGPU_F_DECLSPEC void                redFManipulatorDisable                  (R
 REDGPU_F_DECLSPEC RedFHandleAssimp *  redFCreateAssimp                        (uint64_t count);
 REDGPU_F_DECLSPEC void                redFDestroyAssimp                       (RedFHandleAssimp * handles);
 REDGPU_F_DECLSPEC void                redFAssimpLoadModel                     (RedFHandleAssimp handle, const char * fileName, RedFBool32 optimize);
+REDGPU_F_DECLSPEC unsigned            redFAssimpGetNumMeshes                  (RedFHandleAssimp handle);
+REDGPU_F_DECLSPEC void                redFAssimpGetMeshName                   (RedFHandleAssimp handle, unsigned index, uint64_t * outCharsCountIncludingNullTerminator, char * outChars);
 REDGPU_F_DECLSPEC void                redFAssimpGetMesh                       (RedFHandleAssimp handle, unsigned index, RedFHandleMesh replaceMesh);
 
 REDGPU_F_DECLSPEC RedFHandleEquiMap * redFCreateEquiMap                       (uint64_t count);
