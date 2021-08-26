@@ -546,6 +546,8 @@ REDGPU_F_DECLSPEC int                 redFEventParametersKeyGetModifiers      (R
 REDGPU_F_DECLSPEC int                 redFEventParametersKeyGetScancode       (RedFHandleEventParametersKey parameters);
 REDGPU_F_DECLSPEC RedFKeyEventType    redFEventParametersKeyGetEventType      (RedFHandleEventParametersKey parameters);
 REDGPU_F_DECLSPEC RedFBool32          redFEventParametersMouseHasModifier     (RedFHandleEventParametersMouse parameters, int modifier);
+REDGPU_F_DECLSPEC float               redFEventParametersMouseGetX            (RedFHandleEventParametersMouse parameters);
+REDGPU_F_DECLSPEC float               redFEventParametersMouseGetY            (RedFHandleEventParametersMouse parameters);
 REDGPU_F_DECLSPEC int                 redFEventParametersMouseGetButton       (RedFHandleEventParametersMouse parameters);
 REDGPU_F_DECLSPEC int                 redFEventParametersMouseGetModifiers    (RedFHandleEventParametersMouse parameters);
 REDGPU_F_DECLSPEC float               redFEventParametersMouseGetScrollX      (RedFHandleEventParametersMouse parameters);
@@ -558,6 +560,11 @@ REDGPU_F_DECLSPEC const char *        redFEventParametersDragGetFile          (R
 REDGPU_F_DECLSPEC float               redFEventParametersDragGetPositionX     (RedFHandleEventParametersDrag parameters);
 REDGPU_F_DECLSPEC float               redFEventParametersDragGetPositionY     (RedFHandleEventParametersDrag parameters);
 
+REDGPU_F_DECLSPEC RedFBool32          redFGetMousePressed                     (int button);
+REDGPU_F_DECLSPEC int                 redFGetMouseX                           (void);
+REDGPU_F_DECLSPEC int                 redFGetMouseY                           (void);
+REDGPU_F_DECLSPEC int                 redFGetPreviousMouseX                   (void);
+REDGPU_F_DECLSPEC int                 redFGetPreviousMouseY                   (void);
 REDGPU_F_DECLSPEC void                redFPushMatrix                          (void);
 REDGPU_F_DECLSPEC void                redFMultMatrix                          (void * mat4);
 REDGPU_F_DECLSPEC void                redFMultViewMatrix                      (void * mat4);
