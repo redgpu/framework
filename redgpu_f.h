@@ -28,10 +28,10 @@ typedef struct RedFTypeHandleEventParametersResize * RedFHandleEventParametersRe
 typedef struct RedFTypeHandleEventParametersDrag *   RedFHandleEventParametersDrag;
 
 typedef struct RedFEvents {
-  void (*setup)();
-  void (*update)();
-  void (*draw)();
-  void (*exit)();
+  void (*setup)           (void);
+  void (*update)          (void);
+  void (*draw)            (void);
+  void (*exit)            (void);
   void (*keyPressed)      (RedFHandleEventParametersKey parameters);
   void (*keyReleased)     (RedFHandleEventParametersKey parameters);
   void (*mouseMoved)      (RedFHandleEventParametersMouse parameters);
@@ -173,6 +173,7 @@ REDGPU_F_DECLSPEC int                 redFMain                                (c
 REDGPU_F_DECLSPEC void                redFSetEscapeQuitsApp                   (RedFBool32 quitOnEsc);
 REDGPU_F_DECLSPEC void                redFSetWindowShape                      (int width, int height);
 REDGPU_F_DECLSPEC void                redFSetWindowPosition                   (int x, int y);
+REDGPU_F_DECLSPEC void                redFSetWindowTitle                      (const char * title);
 
 REDGPU_F_DECLSPEC RedFHandleNode *    redFCreateNode                          (uint64_t count);
 REDGPU_F_DECLSPEC void                redFDestroyNode                         (RedFHandleNode * handles);
