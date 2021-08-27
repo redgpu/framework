@@ -22,6 +22,9 @@ typedef struct RedFTypeHandleAssimp *                RedFHandleAssimp;
 typedef struct RedFTypeHandleEquiMap *               RedFHandleEquiMap;
 typedef struct RedFTypeHandleImgui *                 RedFHandleImgui;
 typedef struct RedFTypeHandleSoundPlayer *           RedFHandleSoundPlayer;
+typedef struct RedFTypeHandleDirectory *             RedFHandleDirectory;
+typedef struct RedFTypeHandleThread *                RedFHandleThread;
+typedef struct RedFTypeHandleThreadChannel *         RedFHandleThreadChannel;
 typedef struct RedFTypeHandleEventParametersKey *    RedFHandleEventParametersKey;
 typedef struct RedFTypeHandleEventParametersMouse *  RedFHandleEventParametersMouse;
 typedef struct RedFTypeHandleEventParametersResize * RedFHandleEventParametersResize;
@@ -537,6 +540,91 @@ REDGPU_F_DECLSPEC void                redFSoundShutdown                       (v
 REDGPU_F_DECLSPEC void                redFSoundStopAll                        (void);
 REDGPU_F_DECLSPEC void                redFSoundUpdate                         (void);
 
+REDGPU_F_DECLSPEC RedFHandleDirectory * redFCreateDirectory                   (uint64_t count);
+REDGPU_F_DECLSPEC void                redFDestroyDirectory                    (RedFHandleDirectory * handles);
+REDGPU_F_DECLSPEC void                redFDirectoryOpen                       (RedFHandleDirectory handle, const char * path);
+REDGPU_F_DECLSPEC void                redFDirectoryOpenFromCurrentWorkingDirectory(RedFHandleDirectory handle, const char * path);
+REDGPU_F_DECLSPEC void                redFDirectoryClose                      (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC uint64_t            redFDirectoryListDir                    (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryCreate                     (RedFHandleDirectory handle, RedFBool32 recursiveDefaultIs0);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryExists                     (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC void                redFDirectoryPath                       (RedFHandleDirectory handle, char ** outPath, uint64_t * outPathBytesCount); // redFFree() outPath[0] yourself
+REDGPU_F_DECLSPEC void                redFDirectoryGetAbsolutePath            (RedFHandleDirectory handle, char ** outAbsolutePath, uint64_t * outAbsolutePathBytesCount); // redFFree() outAbsolutePath[0] yourself
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryCanRead                    (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryCanWrite                   (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryCanExecute                 (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryIsDirectory                (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryIsHidden                   (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC void                redFDirectorySetWriteable               (RedFHandleDirectory handle, RedFBool32 writeableDefaultIs1);
+REDGPU_F_DECLSPEC void                redFDirectorySetReadable                (RedFHandleDirectory handle, RedFBool32 readableDefaultIs1);
+REDGPU_F_DECLSPEC void                redFDirectorySetExecutable              (RedFHandleDirectory handle, RedFBool32 executableDefaultIs1);
+REDGPU_F_DECLSPEC void                redFDirectorySetShowHidden              (RedFHandleDirectory handle, RedFBool32 showHidden);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryCopyTo                     (RedFHandleDirectory handle, const char * path, RedFBool32 bRelativeToDataDefaultIs1, RedFBool32 overwriteDefaultIs0);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryMoveTo                     (RedFHandleDirectory handle, const char * path, RedFBool32 bRelativeToDataDefaultIs1, RedFBool32 overwriteDefaultIs0);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryRenameTo                   (RedFHandleDirectory handle, const char * path, RedFBool32 bRelativeToDataDefaultIs1, RedFBool32 overwriteDefaultIs0);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryRemove                     (RedFHandleDirectory handle, RedFBool32 recursive);
+REDGPU_F_DECLSPEC void                redFDirectoryAllowExt                   (RedFHandleDirectory handle, const char * extension);
+REDGPU_F_DECLSPEC void                redFDirectoryGetOriginalDirectory       (RedFHandleDirectory handle, char ** outOriginalDirectory, uint64_t * outOriginalDirectoryBytesCount); // redFFree() outOriginalDirectory[0] yourself
+REDGPU_F_DECLSPEC void                redFDirectoryGetName                    (RedFHandleDirectory handle, uint64_t index, char ** outName, uint64_t * outNameBytesCount); // redFFree() outName[0] yourself
+REDGPU_F_DECLSPEC void                redFDirectoryGetPath                    (RedFHandleDirectory handle, uint64_t index, char ** outPath, uint64_t * outPathBytesCount); // redFFree() outPath[0] yourself
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryGetShowHidden              (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC void                redFDirectoryReset                      (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC void                redFDirectorySort                       (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC void                redFDirectorySortByDate                 (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC uint64_t            redFDirectorySize                       (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC uint64_t            redFDirectoryGetFileCount               (RedFHandleDirectory handle);
+REDGPU_F_DECLSPEC void                redFDirectoryGetFilePath                (RedFHandleDirectory handle, uint64_t index, char ** outPath, uint64_t * outPathBytesCount); // redFFree() outPath[0] yourself
+REDGPU_F_DECLSPEC void                redFDirectoryGetFileExtension           (RedFHandleDirectory handle, uint64_t index, char ** outExtension, uint64_t * outExtensionBytesCount); // redFFree() outExtension[0] yourself
+REDGPU_F_DECLSPEC void                redFDirectoryGetFileName                (RedFHandleDirectory handle, uint64_t index, char ** outFileName, uint64_t * outFileNameBytesCount); // redFFree() outFileName[0] yourself
+REDGPU_F_DECLSPEC void                redFDirectoryGetFileBaseName            (RedFHandleDirectory handle, uint64_t index, char ** outBaseName, uint64_t * outBaseNameBytesCount); // redFFree() outBaseName[0] yourself
+REDGPU_F_DECLSPEC void                redFDirectoryGetFileEnclosingDirectory  (RedFHandleDirectory handle, uint64_t index, char ** outEnclosingDirectory, uint64_t * outEnclosingDirectoryBytesCount); // redFFree() outEnclosingDirectory[0] yourself
+REDGPU_F_DECLSPEC void                redFDirectoryGetFileAbsolutePath        (RedFHandleDirectory handle, uint64_t index, char ** outAbsolutePath, uint64_t * outAbsolutePathBytesCount); // redFFree() outAbsolutePath[0] yourself
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryGetFileCanRead             (RedFHandleDirectory handle, uint64_t index);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryGetFileCanWrite            (RedFHandleDirectory handle, uint64_t index);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryGetFileCanExecute          (RedFHandleDirectory handle, uint64_t index);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryGetFileIsFile              (RedFHandleDirectory handle, uint64_t index);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryGetFileIsLink              (RedFHandleDirectory handle, uint64_t index);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryGetFileIsDirectory         (RedFHandleDirectory handle, uint64_t index);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryGetFileIsDevice            (RedFHandleDirectory handle, uint64_t index);
+REDGPU_F_DECLSPEC RedFBool32          redFDirectoryGetFileIsHidden            (RedFHandleDirectory handle, uint64_t index);
+REDGPU_F_DECLSPEC uint64_t            redFDirectoryGetFileGetSize             (RedFHandleDirectory handle, uint64_t index);
+REDGPU_F_DECLSPEC RedFBool32          redFCreateDirectoryPath                 (const char * dirPath, RedFBool32 bRelativeToDataDefaultIs1, RedFBool32 recursiveDefaultIs0);
+REDGPU_F_DECLSPEC RedFBool32          redFIsDirectoryEmpty                    (const char * dirPath, RedFBool32 bRelativeToDataDefaultIs1);
+REDGPU_F_DECLSPEC RedFBool32          redFDoesDirectoryExist                  (const char * dirPath, RedFBool32 bRelativeToDataDefaultIs1);
+REDGPU_F_DECLSPEC RedFBool32          redFRemoveDirectory                     (const char * dirPath, RedFBool32 deleteIfNotEmpty, RedFBool32 bRelativeToDataDefaultIs1);
+REDGPU_F_DECLSPEC RedFBool32          redFCopyFileFromTo                      (const char * pathSrc, const char * pathDst, RedFBool32 bRelativeToDataDefaultIs1, RedFBool32 overwriteDefaultIs0);
+REDGPU_F_DECLSPEC RedFBool32          redFMoveFileFromTo                      (const char * pathSrc, const char * pathDst, RedFBool32 bRelativeToDataDefaultIs1, RedFBool32 overwriteDefaultIs0);
+REDGPU_F_DECLSPEC RedFBool32          redFDoesFileExist                       (const char * path, RedFBool32 bRelativeToDataDefaultIs1);
+REDGPU_F_DECLSPEC RedFBool32          redFRemoveFile                          (const char * path, RedFBool32 bRelativeToDataDefaultIs1);
+REDGPU_F_DECLSPEC void                redFGetCurrentWorkingDirectory          (char ** outPath, uint64_t * outPathBytesCount); // redFFree() outPath[0] yourself
+REDGPU_F_DECLSPEC void                redFGetCurrentExeDir                    (char ** outPath, uint64_t * outPathBytesCount); // redFFree() outPath[0] yourself
+REDGPU_F_DECLSPEC void                redFGetCurrentExePath                   (char ** outPath, uint64_t * outPathBytesCount); // redFFree() outPath[0] yourself
+REDGPU_F_DECLSPEC void                redFGetUserHomeDir                      (char ** outPath, uint64_t * outPathBytesCount); // redFFree() outPath[0] yourself
+
+REDGPU_F_DECLSPEC RedFHandleThread *  redFCreateThread                        (uint64_t count);
+REDGPU_F_DECLSPEC void                redFDestroyThread                       (RedFHandleThread * handles);
+REDGPU_F_DECLSPEC RedFBool32          redFThreadIsRunning                     (RedFHandleThread handle);
+REDGPU_F_DECLSPEC void                redFThreadGetName                       (RedFHandleThread handle, char ** outName, uint64_t * outNameBytesCount); // redFFree() outName[0] yourself
+REDGPU_F_DECLSPEC void                redFThreadSetName                       (RedFHandleThread handle, const char * name);
+REDGPU_F_DECLSPEC void                redFThreadStart                         (RedFHandleThread handle);
+REDGPU_F_DECLSPEC RedFBool32          redFThreadLock                          (RedFHandleThread handle);
+REDGPU_F_DECLSPEC RedFBool32          redFThreadTryLock                       (RedFHandleThread handle);
+REDGPU_F_DECLSPEC void                redFThreadUnlock                        (RedFHandleThread handle);
+REDGPU_F_DECLSPEC void                redFThreadStop                          (RedFHandleThread handle);
+REDGPU_F_DECLSPEC void                redFThreadWaitFor                       (RedFHandleThread handle, RedFBool32 callStopThreadDefaultIs1, long millisecondsDefaultIsMinus1ForInfiniteJoinTimeout);
+REDGPU_F_DECLSPEC void                redFThreadSleep                         (RedFHandleThread handle, long milliseconds);
+REDGPU_F_DECLSPEC void                redFThreadYield                         (RedFHandleThread handle);
+REDGPU_F_DECLSPEC RedFBool32          redFThreadIsCurrent                     (RedFHandleThread handle);
+
+REDGPU_F_DECLSPEC RedFHandleThreadChannel * redFCreateThreadChannel           (uint64_t count);
+REDGPU_F_DECLSPEC void                redFDestroyThreadChannel                (RedFHandleThreadChannel * handles);
+REDGPU_F_DECLSPEC RedFBool32          redFThreadChannelSend                   (RedFHandleThreadChannel handle, void * value);
+REDGPU_F_DECLSPEC RedFBool32          redFThreadChannelReceive                (RedFHandleThreadChannel handle, void ** outSentValue);
+REDGPU_F_DECLSPEC RedFBool32          redFThreadChannelTryReceive             (RedFHandleThreadChannel handle, void ** outSentValue);
+REDGPU_F_DECLSPEC RedFBool32          redFThreadChannelTryReceiveWithTimeout  (RedFHandleThreadChannel handle, void ** outSentValue, int64_t timeoutMs);
+REDGPU_F_DECLSPEC RedFBool32          redFThreadChannelEmpty                  (RedFHandleThreadChannel handle);
+REDGPU_F_DECLSPEC void                redFThreadChannelClose                  (RedFHandleThreadChannel handle);
+
 REDGPU_F_DECLSPEC RedFBool32          redFEventParametersKeyHasModifier       (RedFHandleEventParametersKey parameters, int modifier);
 REDGPU_F_DECLSPEC unsigned            redFEventParametersKeyGetCodepoint      (RedFHandleEventParametersKey parameters);
 REDGPU_F_DECLSPEC RedFBool32          redFEventParametersKeyIsRepeat          (RedFHandleEventParametersKey parameters);
@@ -651,6 +739,13 @@ REDGPU_F_DECLSPEC uint64_t            redFGetSystemTimeMicros                 (v
 REDGPU_F_DECLSPEC unsigned            redFGetUnixTime                         (void);
 REDGPU_F_DECLSPEC void                redFDisableArbTex                       (void);
 REDGPU_F_DECLSPEC void                redFEnableArbTex                        (void);
+REDGPU_F_DECLSPEC void                redFGetEnv                              (const char * variable, char ** outValue, uint64_t * outValueBytesCount); // redFFree() outValue[0] yourself
+REDGPU_F_DECLSPEC void                redFSystem                              (const char * command, char ** outOutput, uint64_t * outOutputBytesCount); // redFFree() outOutput[0] yourself
+REDGPU_F_DECLSPEC void                redFSystemAlertDialog                   (const char * errorMessage);
+REDGPU_F_DECLSPEC void                redFSystemLoadDialog                    (const char * windowTitle, RedFBool32 bFolderSelection, const char * defaultPath, char ** outFilePath, uint64_t * outFilePathBytesCount, char ** outFileName, uint64_t * outFileNameBytesCount, RedFBool32 * outSuccess); // redFFree() outFilePath[0] and outFileName[0] yourself
+REDGPU_F_DECLSPEC void                redFSystemSaveDialog                    (const char * defaultName, const char * messageName, char ** outFilePath, uint64_t * outFilePathBytesCount, char ** outFileName, uint64_t * outFileNameBytesCount, RedFBool32 * outSuccess); // redFFree() outFilePath[0] and outFileName[0] yourself
+REDGPU_F_DECLSPEC void                redFSystemTextBoxDialog                 (const char * question, const char * text, char ** outAnswer, uint64_t * outAnswerBytesCount); // redFFree() outAnswer[0] yourself
+REDGPU_F_DECLSPEC void                redFFree                                (void * pointer);
 
 #ifdef __cplusplus
 }
