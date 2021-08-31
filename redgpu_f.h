@@ -177,6 +177,7 @@ REDGPU_F_DECLSPEC void                redFSetEscapeQuitsApp                   (R
 REDGPU_F_DECLSPEC void                redFSetWindowShape                      (int width, int height);
 REDGPU_F_DECLSPEC void                redFSetWindowPosition                   (int x, int y);
 REDGPU_F_DECLSPEC void                redFSetWindowTitle                      (const char * title);
+REDGPU_F_DECLSPEC void                redFSetWindowTitleW                     (const wchar_t * title);
 
 REDGPU_F_DECLSPEC RedFHandleNode *    redFCreateNode                          (uint64_t count);
 REDGPU_F_DECLSPEC void                redFDestroyNode                         (RedFHandleNode * handles);
@@ -355,6 +356,7 @@ REDGPU_F_DECLSPEC int                 redFImageGetHeight                      (R
 REDGPU_F_DECLSPEC RedFImageType       redFImageGetImageType                   (RedFHandleImage handle);
 REDGPU_F_DECLSPEC void                redFImageClear                          (RedFHandleImage handle);
 REDGPU_F_DECLSPEC RedFBool32          redFImageLoad                           (RedFHandleImage handle, const char * fileName);
+REDGPU_F_DECLSPEC RedFBool32          redFImageLoadFromMemory                 (RedFHandleImage handle, uint64_t imageMemoryBytesCount, const void * imageMemory);
 REDGPU_F_DECLSPEC void                redFImageSave                           (RedFHandleImage handle, const char * fileName);
 REDGPU_F_DECLSPEC void                redFImageGrabScreen                     (RedFHandleImage handle, int x, int y, int w, int h);
 REDGPU_F_DECLSPEC void                redFImageSetColor                       (RedFHandleImage handle, int x, int y, int r, int g, int b, int a);
@@ -446,7 +448,7 @@ REDGPU_F_DECLSPEC void                redFMaterialGetAmbientColor             (R
 REDGPU_F_DECLSPEC void                redFMaterialGetSpecularColor            (RedFHandleMaterial handle, void * outVec4);
 REDGPU_F_DECLSPEC void                redFMaterialGetEmissiveColor            (RedFHandleMaterial handle, void * outVec4);
 REDGPU_F_DECLSPEC float               redFMaterialGetShininess                (RedFHandleMaterial handle);
-REDGPU_F_DECLSPEC void                redFMaterialGetSettings                 (RedFHandleMaterial handle, RedFMaterialSettings * outSettings, const char ** outMallocPostFragment, const char ** outMallocCustomUniforms);
+REDGPU_F_DECLSPEC void                redFMaterialGetSettings                 (RedFHandleMaterial handle, RedFMaterialSettings * outSettings, char ** outPostFragment, char ** outCustomUniforms); // redFFree() outPostFragment[0] and outCustomUniforms[0] yourself
 REDGPU_F_DECLSPEC void                redFMaterialSetCustomUniform4f          (RedFHandleMaterial handle, const char * uniformName, float v0, float v1, float v2, float v3);
 REDGPU_F_DECLSPEC void                redFMaterialSetCustomUniformMatrix4f    (RedFHandleMaterial handle, const char * uniformName, void * mat4);
 REDGPU_F_DECLSPEC void                redFMaterialSetCustomUniformImage       (RedFHandleMaterial handle, const char * uniformName, RedFHandleImage image, int textureLocation);
@@ -645,6 +647,7 @@ REDGPU_F_DECLSPEC int                 redFEventParametersResizeGetWidth       (R
 REDGPU_F_DECLSPEC int                 redFEventParametersResizeGetHeight      (RedFHandleEventParametersResize parameters);
 REDGPU_F_DECLSPEC uint64_t            redFEventParametersDragGetFilesCount    (RedFHandleEventParametersDrag parameters);
 REDGPU_F_DECLSPEC const char *        redFEventParametersDragGetFile          (RedFHandleEventParametersDrag parameters, uint64_t fileIndex);
+REDGPU_F_DECLSPEC void                redFEventParametersDragGetFileW         (RedFHandleEventParametersDrag parameters, uint64_t fileIndex, wchar_t ** outPath, uint64_t * outPathBytesCount); // redFFree() outPath[0] yourself
 REDGPU_F_DECLSPEC float               redFEventParametersDragGetPositionX     (RedFHandleEventParametersDrag parameters);
 REDGPU_F_DECLSPEC float               redFEventParametersDragGetPositionY     (RedFHandleEventParametersDrag parameters);
 
@@ -698,8 +701,7 @@ REDGPU_F_DECLSPEC void                redFEnableBlendMode                     (R
 REDGPU_F_DECLSPEC void                redFDisableBlendMode                    (void);
 REDGPU_F_DECLSPEC void                redFEnableDepthTest                     (void);
 REDGPU_F_DECLSPEC void                redFDisableDepthTest                    (void);
-REDGPU_F_DECLSPEC uint64_t            redFGetClipboardStringCharsCountIncludingNullTerminator (void);
-REDGPU_F_DECLSPEC void                redFGetClipboardStringChars             (char * outString);
+REDGPU_F_DECLSPEC void                redFGetClipboardStringChars             (char ** outString, uint64_t * outStringBytesCount); // redFFree() outString[0] yourself
 REDGPU_F_DECLSPEC void                redFSetClipboardString                  (const char * string);
 REDGPU_F_DECLSPEC void                redFShowCursor                          (void);
 REDGPU_F_DECLSPEC void                redFHideCursor                          (void);
@@ -742,8 +744,8 @@ REDGPU_F_DECLSPEC void                redFEnableArbTex                        (v
 REDGPU_F_DECLSPEC void                redFGetEnv                              (const char * variable, char ** outValue, uint64_t * outValueBytesCount); // redFFree() outValue[0] yourself
 REDGPU_F_DECLSPEC void                redFSystem                              (const char * command, char ** outOutput, uint64_t * outOutputBytesCount); // redFFree() outOutput[0] yourself
 REDGPU_F_DECLSPEC void                redFSystemAlertDialog                   (const char * errorMessage);
-REDGPU_F_DECLSPEC void                redFSystemLoadDialog                    (const char * windowTitle, RedFBool32 bFolderSelection, const char * defaultPath, char ** outFilePath, uint64_t * outFilePathBytesCount, char ** outFileName, uint64_t * outFileNameBytesCount, RedFBool32 * outSuccess); // redFFree() outFilePath[0] and outFileName[0] yourself
-REDGPU_F_DECLSPEC void                redFSystemSaveDialog                    (const char * defaultName, const char * messageName, char ** outFilePath, uint64_t * outFilePathBytesCount, char ** outFileName, uint64_t * outFileNameBytesCount, RedFBool32 * outSuccess); // redFFree() outFilePath[0] and outFileName[0] yourself
+REDGPU_F_DECLSPEC RedFBool32          redFSystemLoadDialog                    (const char * windowTitle, RedFBool32 bFolderSelection, const char * defaultPath, char ** outFilePath, uint64_t * outFilePathBytesCount, char ** outFileName, uint64_t * outFileNameBytesCount); // redFFree() outFilePath[0] and outFileName[0] yourself
+REDGPU_F_DECLSPEC RedFBool32          redFSystemSaveDialog                    (const char * defaultName, const char * messageName, char ** outFilePath, uint64_t * outFilePathBytesCount, char ** outFileName, uint64_t * outFileNameBytesCount); // redFFree() outFilePath[0] and outFileName[0] yourself
 REDGPU_F_DECLSPEC void                redFSystemTextBoxDialog                 (const char * question, const char * text, char ** outAnswer, uint64_t * outAnswerBytesCount); // redFFree() outAnswer[0] yourself
 REDGPU_F_DECLSPEC void                redFFree                                (void * pointer);
 
