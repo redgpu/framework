@@ -747,6 +747,7 @@ REDGPU_F_DECLSPEC void                redFSystemAlertDialog                   (c
 REDGPU_F_DECLSPEC RedFBool32          redFSystemLoadDialog                    (const char * windowTitle, RedFBool32 bFolderSelection, const char * defaultPath, char ** outFilePath, uint64_t * outFilePathBytesCount, char ** outFileName, uint64_t * outFileNameBytesCount); // redFFree() outFilePath[0] and outFileName[0] yourself
 REDGPU_F_DECLSPEC RedFBool32          redFSystemSaveDialog                    (const char * defaultName, const char * messageName, char ** outFilePath, uint64_t * outFilePathBytesCount, char ** outFileName, uint64_t * outFileNameBytesCount); // redFFree() outFilePath[0] and outFileName[0] yourself
 REDGPU_F_DECLSPEC void                redFSystemTextBoxDialog                 (const char * question, const char * text, char ** outAnswer, uint64_t * outAnswerBytesCount); // redFFree() outAnswer[0] yourself
+REDGPU_F_DECLSPEC void *              redFGetGLFWwindowPointer                (void);
 REDGPU_F_DECLSPEC void                redFFree                                (void * pointer);
 
 #ifdef __cplusplus
