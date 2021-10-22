@@ -2,6 +2,21 @@
 
 #include "redgpu_f.h"
 
+char * __REDGPU_FRAMEWORK_MISC_GLOBAL_9e04ca0ac3a569a6d1f533dcf5b5cc3ce954239e_clipboard = 0;
+
+static const char * redFMiscInternalDearImguiSetupFixTextPastingCallback(void * userData) {
+  if (__REDGPU_FRAMEWORK_MISC_GLOBAL_9e04ca0ac3a569a6d1f533dcf5b5cc3ce954239e_clipboard != 0) {
+    redFFree(__REDGPU_FRAMEWORK_MISC_GLOBAL_9e04ca0ac3a569a6d1f533dcf5b5cc3ce954239e_clipboard);
+  }
+  redFGetClipboardStringChars(&__REDGPU_FRAMEWORK_MISC_GLOBAL_9e04ca0ac3a569a6d1f533dcf5b5cc3ce954239e_clipboard, 0);
+  return (const char *)__REDGPU_FRAMEWORK_MISC_GLOBAL_9e04ca0ac3a569a6d1f533dcf5b5cc3ce954239e_clipboard;
+}
+
+static inline void redFMiscDearImguiSetupFixTextPasting(void) {
+  ImGuiIO * io = igGetIO();
+  io->GetClipboardTextFn = redFMiscInternalDearImguiSetupFixTextPastingCallback;
+}
+
 static inline void redFMiscDearImguiUppercaseInputQueueCharactersIfKeyShiftIsPressed(void) {
   ImGuiIO * io = igGetIO();
   if (io->KeyShift == 1) {
