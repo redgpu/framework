@@ -380,7 +380,7 @@ REDGPU_F_DECLSPEC void                redFImageDrawSubsection                 (R
 
 REDGPU_F_DECLSPEC RedFHandleFbo *     redFCreateFbo                           (uint64_t count);
 REDGPU_F_DECLSPEC void                redFDestroyFbo                          (RedFHandleFbo * handles);
-REDGPU_F_DECLSPEC void                redFFboAllocate                         (RedFHandleFbo handle, int width, int height, const RedFFboSettings * optionalSettings);
+REDGPU_F_DECLSPEC void                redFFboAllocate                         (RedFHandleFbo handle, int width, int height, int numSamples, const RedFFboSettings * optionalSettings);
 REDGPU_F_DECLSPEC RedFBool32          redFFboIsAllocated                      (RedFHandleFbo handle);
 REDGPU_F_DECLSPEC void                redFFboBegin                            (RedFHandleFbo handle, RedFBool32 setupScreenDefaultIs1);
 REDGPU_F_DECLSPEC void                redFFboActivateAllDrawBuffers           (RedFHandleFbo handle);
