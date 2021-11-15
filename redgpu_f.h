@@ -734,6 +734,7 @@ REDGPU_F_DECLSPEC void                redFSetSmoothLighting                   (R
 REDGPU_F_DECLSPEC void                redFEnableCulling                       (unsigned modeDefaultIsGLBack0x0405);
 REDGPU_F_DECLSPEC void                redFDisableCulling                      (void);
 REDGPU_F_DECLSPEC void                redFSaveScreenToPng                     (const char * fileName);
+REDGPU_F_DECLSPEC void                redFSaveScreenRawToMemory               (int x, int y, int width, int height, void * out8BitRGBAPixels);
 REDGPU_F_DECLSPEC float               redFGetElapsedTimef                     (void);
 REDGPU_F_DECLSPEC uint64_t            redFGetElapsedTimeMillis                (void);
 REDGPU_F_DECLSPEC uint64_t            redFGetElapsedTimeMicros                (void);
