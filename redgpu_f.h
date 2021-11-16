@@ -354,7 +354,9 @@ REDGPU_F_DECLSPEC void                redFImageAllocate                       (R
 REDGPU_F_DECLSPEC RedFBool32          redFImageIsAllocated                    (RedFHandleImage handle);
 REDGPU_F_DECLSPEC int                 redFImageGetWidth                       (RedFHandleImage handle);
 REDGPU_F_DECLSPEC int                 redFImageGetHeight                      (RedFHandleImage handle);
+REDGPU_F_DECLSPEC int                 redFImageGetBitsPerPixel                (RedFHandleImage handle);
 REDGPU_F_DECLSPEC RedFImageType       redFImageGetImageType                   (RedFHandleImage handle);
+REDGPU_F_DECLSPEC void *              redFImageGetPixelsPointer               (RedFHandleImage handle);
 REDGPU_F_DECLSPEC void                redFImageClear                          (RedFHandleImage handle);
 REDGPU_F_DECLSPEC RedFBool32          redFImageLoad                           (RedFHandleImage handle, const char * fileName);
 REDGPU_F_DECLSPEC RedFBool32          redFImageLoadFromMemory                 (RedFHandleImage handle, uint64_t imageMemoryBytesCount, const void * imageMemory);
