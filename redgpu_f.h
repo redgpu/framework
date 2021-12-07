@@ -65,7 +65,7 @@ typedef struct RedFFboSettings {
   RedFBool32 depthStencilAsTexture;      // Use a texture instead of a renderbuffer for depth (useful to draw it or use it in a shader later)
   unsigned   textureTarget;              // GL_TEXTURE_2D or GL_TEXTURE_RECTANGLE_ARB
   int        internalformat;             // GL_RGBA, GL_RGBA16F_ARB, GL_RGBA32F_ARB, GL_LUMINANCE32F_ARB etc.
-  int        depthStencilInternalFormat; // GL_DEPTH_COMPONENT(16/24/32)
+  int        depthStencilInternalFormat; // GL_DEPTH_COMPONENT(16/24/32F)
   int        wrapModeHorizontal;         // GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER etc.
   int        wrapModeVertical;           // GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER etc.
   int        minFilter;                  // GL_NEAREST, GL_LINEAR etc.
