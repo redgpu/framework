@@ -722,6 +722,8 @@ REDGPU_F_DECLSPEC float               redFGetNativeViewportY                  (v
 REDGPU_F_DECLSPEC float               redFGetNativeViewportWidth              (void);
 REDGPU_F_DECLSPEC float               redFGetNativeViewportHeight             (void);
 REDGPU_F_DECLSPEC void                redFViewport                            (float x, float y, float width, float height, RedFBool32 vFlip);
+REDGPU_F_DECLSPEC void                redFSetClearDepthValue                  (float depthDefaultIs1);
+REDGPU_F_DECLSPEC void                redFSetDepthFunc                        (unsigned funcDefaultIsGlLess);
 REDGPU_F_DECLSPEC void                redFColorMask                           (RedFBool32 r, RedFBool32 g, RedFBool32 b, RedFBool32 a);
 REDGPU_F_DECLSPEC void                redFClear                               (float r, float g, float b, float a);
 REDGPU_F_DECLSPEC void                redFClearAlpha                          (void);
@@ -747,6 +749,10 @@ REDGPU_F_DECLSPEC uint64_t            redFGetSystemTimeMicros                 (v
 REDGPU_F_DECLSPEC unsigned            redFGetUnixTime                         (void);
 REDGPU_F_DECLSPEC void                redFDisableArbTex                       (void);
 REDGPU_F_DECLSPEC void                redFEnableArbTex                        (void);
+REDGPU_F_DECLSPEC void                redFClipControl                         (unsigned originDefaultIsGlLowerLeft, unsigned depthDefaultIsGlNegativeOneToOne);
+REDGPU_F_DECLSPEC void                redFEnable                              (unsigned glenum);
+REDGPU_F_DECLSPEC void                redFDisable                             (unsigned glenum);
+REDGPU_F_DECLSPEC void                redFGetIntegerv                         (unsigned glenum, void * outValue);
 REDGPU_F_DECLSPEC void                redFGetEnv                              (const char * variable, char ** outValue, uint64_t * outValueBytesCount); // redFFree() outValue[0] yourself
 REDGPU_F_DECLSPEC void                redFSystem                              (const char * command, char ** outOutput, uint64_t * outOutputBytesCount); // redFFree() outOutput[0] yourself
 REDGPU_F_DECLSPEC void                redFSystemAlertDialog                   (const char * errorMessage);
