@@ -371,9 +371,14 @@ REDGPU_F_DECLSPEC void                redFImageMirror                         (R
 REDGPU_F_DECLSPEC void                redFImageSetTextureWrap                 (RedFHandleImage handle, int wrapModeHorizontal, int wrapModeVertical);
 REDGPU_F_DECLSPEC void                redFImageSetTextureMinMagFilter         (RedFHandleImage handle, int minFilter, int magFilter);
 REDGPU_F_DECLSPEC void                redFImageSetTextureCompareModeFunc      (RedFHandleImage handle, int compareMode, int compareFunc);
+REDGPU_F_DECLSPEC void                redFImageSetTextureMaxAnisotropy        (RedFHandleImage handle, int maxAnisotropy);
 REDGPU_F_DECLSPEC void                redFImageSetAnchorPercent               (RedFHandleImage handle, float x, float y);
 REDGPU_F_DECLSPEC void                redFImageSetAnchorPoint                 (RedFHandleImage handle, float x, float y);
 REDGPU_F_DECLSPEC void                redFImageResetAnchor                    (RedFHandleImage handle);
+REDGPU_F_DECLSPEC RedFBool32          redFImageHasMipmap                      (RedFHandleImage handle);
+REDGPU_F_DECLSPEC void                redFImageMipmapDisable                  (RedFHandleImage handle);
+REDGPU_F_DECLSPEC void                redFImageMipmapEnable                   (RedFHandleImage handle);
+REDGPU_F_DECLSPEC void                redFImageMipmapGenerate                 (RedFHandleImage handle);
 REDGPU_F_DECLSPEC void                redFImageUpdate                         (RedFHandleImage handle);
 REDGPU_F_DECLSPEC void                redFImageBind                           (RedFHandleImage handle);
 REDGPU_F_DECLSPEC void                redFImageUnbind                         (RedFHandleImage handle);
