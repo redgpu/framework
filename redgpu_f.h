@@ -26,6 +26,8 @@ typedef struct RedFTypeHandleSoundPlayer *           RedFHandleSoundPlayer;
 typedef struct RedFTypeHandleDirectory *             RedFHandleDirectory;
 typedef struct RedFTypeHandleThread *                RedFHandleThread;
 typedef struct RedFTypeHandleThreadChannel *         RedFHandleThreadChannel;
+typedef struct RedFTypeHandleFbx *                   RedFHandleFbx;
+typedef struct RedFTypeHandleFbxBone *               RedFHandleFbxBone;               // Derived from Node
 typedef struct RedFTypeHandleEventParametersKey *    RedFHandleEventParametersKey;
 typedef struct RedFTypeHandleEventParametersMouse *  RedFHandleEventParametersMouse;
 typedef struct RedFTypeHandleEventParametersResize * RedFHandleEventParametersResize;
@@ -767,6 +769,24 @@ REDGPU_F_DECLSPEC void                redFSystemTextBoxDialog                 (c
 REDGPU_F_DECLSPEC void                redFEnableFramebufferSRGBGammaCorrection(void);
 REDGPU_F_DECLSPEC void *              redFGetGLFWwindowPointer                (void);
 REDGPU_F_DECLSPEC void                redFFree                                (void * pointer);
+
+REDGPU_F_DECLSPEC RedFHandleFbx *     redFCreateFbx                           (uint64_t count);
+REDGPU_F_DECLSPEC void                redFDestroyFbx                          (RedFHandleFbx * handles);
+REDGPU_F_DECLSPEC RedFBool32          redFFbxLoad                             (RedFHandleFbx handle, const char * filepath);
+REDGPU_F_DECLSPEC void                redFFbxCopyToFbx                        (RedFHandleFbx handle, RedFHandleFbx to);
+REDGPU_F_DECLSPEC void                redFFbxClear                            (RedFHandleFbx handle);
+REDGPU_F_DECLSPEC void                redFFbxEarlyUpdate                      (RedFHandleFbx handle);
+REDGPU_F_DECLSPEC void                redFFbxLateUpdate                       (RedFHandleFbx handle);
+REDGPU_F_DECLSPEC int                 redFFbxGetMeshesCount                   (RedFHandleFbx handle);
+REDGPU_F_DECLSPEC RedFHandleMesh      redFFbxGetMesh                          (RedFHandleFbx handle, int meshIndex);
+REDGPU_F_DECLSPEC void                redFFbxGetMeshName                      (RedFHandleFbx handle, int meshIndex, uint64_t * outCharsCountIncludingNullTerminator, char * outChars);
+REDGPU_F_DECLSPEC int                 redFFbxGetRootBonesCount                (RedFHandleFbx handle);
+REDGPU_F_DECLSPEC RedFHandleFbxBone   redFFbxGetRootBone                      (RedFHandleFbx handle, int rootBoneIndex);
+REDGPU_F_DECLSPEC RedFHandleNode      redFFbxBoneCastToNode                   (RedFHandleFbxBone handle);
+REDGPU_F_DECLSPEC void                redFFbxBoneGetName                      (RedFHandleFbxBone handle, uint64_t * outCharsCountIncludingNullTerminator, char * outChars);
+REDGPU_F_DECLSPEC int                 redFFbxBoneGetChildBonesCount           (RedFHandleFbxBone handle);
+REDGPU_F_DECLSPEC RedFHandleFbxBone   redFFbxBoneGetChildBone                 (RedFHandleFbxBone handle, int childBoneIndex);
+REDGPU_F_DECLSPEC RedFHandleFbxBone   redFFbxBoneGetChildBoneByNameRecursively(RedFHandleFbxBone handle, const char * boneName);
 
 #ifdef __cplusplus
 }
